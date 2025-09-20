@@ -1,0 +1,74 @@
+services:
+  appdb1:
+    build:
+      context: .
+      dockerfile: appdb.Dockerfile
+    image: appdb:8.2
+    container_name: appdb1
+    hostname: appdb1
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - appdb1:/data
+    command:
+      [
+        "--replSet",
+        "omrs",
+        "--auth",
+        "--bind_ip_all",
+        "--keyFile",
+        "/var/lib/mongo/rsAuthKey",
+      ]
+
+  appdb2:
+    depends_on:
+      - appdb1
+    image: appdb:8.2
+    container_name: appdb2
+    hostname: appdb2
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - appdb2:/data
+    command:
+      [
+        "--replSet",
+        "omrs",
+        "--auth",
+        "--bind_ip_all",
+        "--keyFile",
+        "/var/lib/mongo/rsAuthKey",
+      ]
+
+  appdb3:
+    depends_on:
+      - appdb2
+    image: appdb:8.2
+    container_name: appdb3
+    hostname: appdb3
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - appdb3:/data
+      - ./conf:/var/lib/mongo/conf:ro
+    entrypoint: ["/var/lib/mongo/conf/appdb_provision.sh"]
+    command:
+      [
+        "/bin/python3",
+        "/usr/local/bin/docker-entrypoint.py",
+        "--replSet",
+        "omrs",
+        "--auth",
+        "--bind_ip_all",
+        "--keyFile",
+        "/var/lib/mongo/rsAuthKey",
+      ]
+
+networks:
+  default:
+    name: omdemo_network
+
+volumes:
+  appdb1:
+  appdb2:
+  appdb3:
