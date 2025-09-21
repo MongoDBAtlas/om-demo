@@ -75,7 +75,7 @@ services:
       resources:
         limits:
           cpus: "4.0"
-          memory: 16G
+          memory: 15G
     container_name: om
     hostname: om
     environment:
@@ -85,8 +85,8 @@ services:
     volumes:
       - mms-logs:/opt/mongodb/mms/logs
     user: "mongodb-mms:mongodb-mms"
-    entrypoint: ["/bin/bash", "-c", "sleep infinity"]
-    # entrypoint: ["/etc/init.d/mongodb-mms", "start"]
+    # entrypoint: ["/bin/bash", "-c", "sleep infinity"]
+    entrypoint: ["/etc/init.d/mongodb-mms", "start"]
 
 networks:
   default:
