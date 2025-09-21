@@ -1,9 +1,11 @@
 FROM amd64/ubuntu:22.04
 
+# critical depencencies
+RUN apt update && apt install -y net-tools xterm vim
+
 ARG OMFILE=mongodb-mms-8.0.14.500.20250915T2014Z.amd64.deb
-RUN apt update && apt install -y curl &&\
-    curl -o /tmp/${OMFILE} -OL https://downloads.mongodb.com/on-prem-mms/deb/${OMFILE} &&\
-    apt install -y /tmp/${OMFILE} &&\
+ADD https://downloads.mongodb.com/on-prem-mms/deb/${OMFILE} /tmp/${OMFILE}
+RUN apt install -y /tmp/${OMFILE} &&\
     apt autoremove && apt clean &&\
     rm -f /tmp/${OMFILE}
 
@@ -23,7 +25,7 @@ RUN sed -i "s#\(^.*//\)127.0.0.1:27017\(.*\)#\1${appdb_user}:${appdb_pwd}@appdb1
     ## pass pre-flight check without UI setup
     echo "mms.fromEmailAddr=om@localhost" >> ${CONFFILE} &&\
     echo "mms.replyToEmailAddr=om@localhost" >> ${CONFFILE} &&\
-    echo "mms.adminEmailAddrs=om@localhost" >> ${CONFFILE} &&\
+    echo "mms.adminEmailAddr=om@localhost" >> ${CONFFILE} &&\
     echo "mms.mail.transport=smtp" >> ${CONFFILE} &&\
     echo "mms.mail.hostname=localhost" >> ${CONFFILE} &&\
     echo "mms.mail.port=25" >> ${CONFFILE}
