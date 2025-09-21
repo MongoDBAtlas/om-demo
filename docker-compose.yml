@@ -64,6 +64,30 @@ services:
         "/var/lib/mongo/rsAuthKey",
       ]
 
+  om:
+    build:
+      context: .
+      dockerfile: om.Dockerfile
+    depends_on:
+      - appdb3
+    image: opsmanager:8
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 16G
+    container_name: om
+    hostname: om
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - 8080:8080
+    volumes:
+      - mms-logs:/opt/mongodb/mms/logs
+    user: "mongodb-mms:mongodb-mms"
+    entrypoint: ["/bin/bash", "-c", "sleep infinity"]
+    # entrypoint: ["/etc/init.d/mongodb-mms", "start"]
+
 networks:
   default:
     name: omdemo_network
@@ -72,3 +96,4 @@ volumes:
   appdb1:
   appdb2:
   appdb3:
+  mms-logs:
