@@ -177,6 +177,20 @@ services:
       fsize: -1
     entrypoint: ["/opt/mongodb-mms-automation/agent_start.sh"]
 
+  bkst:
+    profiles: ["agent", "backup"]
+    image: appdb:8.2
+    deploy:
+      resources:
+        reservations:
+          cpus: "1.0"
+          memory: 2G
+    container_name: bkst
+    hostname: bkst
+    environment:
+      - TZ=Asia/Seoul
+    command: ["--bind_ip_all"]
+
 networks:
   default:
     name: omdemo_network
