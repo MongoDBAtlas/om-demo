@@ -8,14 +8,28 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1.0"
-          memory: 1G
+          cpus: "2.0"
+          memory: 2G
     container_name: appdb1
     hostname: appdb1
+    privileged: true
     environment:
       - TZ=Asia/Seoul
+    ulimits:
+      nofile: 64000
+      nproc: 64000
+      cpu: -1
+      as: -1
+      memlock: -1
+      fsize: -1
+    volumes:
+      - ./conf:/var/lib/mongo/conf:ro
+    user: "root:root"
+    entrypoint: ["/var/lib/mongo/conf/appdb_start.sh"]
     command:
       [
+        "/bin/python3",
+        "/usr/local/bin/docker-entrypoint.py",
         "--replSet",
         "omrs",
         "--auth",
@@ -32,14 +46,28 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1.0"
-          memory: 1G
+          cpus: "2.0"
+          memory: 2G
     container_name: appdb2
     hostname: appdb2
+    privileged: true
     environment:
       - TZ=Asia/Seoul
+    ulimits:
+      nofile: 64000
+      nproc: 64000
+      cpu: -1
+      as: -1
+      memlock: -1
+      fsize: -1
+    volumes:
+      - ./conf:/var/lib/mongo/conf:ro
+    user: "root:root"
+    entrypoint: ["/var/lib/mongo/conf/appdb_start.sh"]
     command:
       [
+        "/bin/python3",
+        "/usr/local/bin/docker-entrypoint.py",
         "--replSet",
         "omrs",
         "--auth",
@@ -56,14 +84,23 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1.0"
-          memory: 1G
+          cpus: "2.0"
+          memory: 2G
     container_name: appdb3
     hostname: appdb3
+    privileged: true
     environment:
       - TZ=Asia/Seoul
+    ulimits:
+      nofile: 64000
+      nproc: 64000
+      cpu: -1
+      as: -1
+      memlock: -1
+      fsize: -1
     volumes:
       - ./conf:/var/lib/mongo/conf:ro
+    user: "root:root"
     entrypoint: ["/var/lib/mongo/conf/appdb_provision.sh"]
     command:
       [
@@ -178,13 +215,15 @@ services:
     entrypoint: ["/opt/mongodb-mms-automation/agent_start.sh"]
 
   bkst:
-    profiles: ["agent", "backup"]
+    profiles: ["agent"]
+    depends_on:
+      - ag3
     image: appdb:8.2
     deploy:
       resources:
         reservations:
-          cpus: "1.0"
-          memory: 2G
+          cpus: "2.0"
+          memory: 4G
     container_name: bkst
     hostname: bkst
     environment:
