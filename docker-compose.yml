@@ -142,7 +142,7 @@ services:
     profiles: ["agent"]
     build:
       context: .
-      dockerfile: agent.Dockerfile
+      dockerfile: agent.${ARCH:-amd64}.Dockerfile
       args:
         - mmsGroupId=${mmsGroupId}
         - mmsApiKey=${mmsApiKey}

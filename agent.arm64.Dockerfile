@@ -4,7 +4,7 @@ FROM ubuntu:22.04
 RUN apt update && apt install -y net-tools vim
 
 # prerequisites for automation agent for EA installation
-RUN apt-get install -y \
+RUN apt install -y \
     libcurl4 libgssapi-krb5-2 libldap-2.5-0 liblzma5 \
     libsasl2-2 libsasl2-modules \
     libsasl2-modules-gssapi-mit libwrap0 openssl
